@@ -29,10 +29,11 @@ On the root of this project run on your terminal (if you want you can do this wi
     
  **Update the node packages** 
 On the root of this project run on your terminal (if you want you can do this with yarn but thats optional)
-    
-    npm update
+```bash
+  npm update
+```
 
-
-**Start the server**
-
+**Start the dev server**
+```bash
   npm run watch
+```
