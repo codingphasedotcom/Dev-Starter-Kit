@@ -34,7 +34,7 @@ class Layout extends Component {
 						<br />
 						<a
 							className="github-button"
-							href="https://github.com/codingphasedotcom/Starter-Kit-2018"
+							href="https://github.com/codingphasedotcom/Starter-Kit-2019"
 							data-icon="octicon-star"
 							data-style="mega"
 							data-count-href="/codingphasedotcom/rocky/stargazers"

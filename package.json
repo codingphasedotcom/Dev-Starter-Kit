@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack --mode development",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "watch": "gulp"
   },
   "author": "",
   "license": "ISC",
@@ -43,7 +44,5 @@
     "react-redux": "^5.1.0",
     "webpack-md5-hash": "0.0.6"
   },
-  "dependencies": {
-    
-  }
+  "dependencies": {}
 }

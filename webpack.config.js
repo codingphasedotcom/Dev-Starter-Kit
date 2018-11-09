@@ -15,7 +15,7 @@ compress.unused = true;
 
 module.exports = {
 	entry: {
-		index: './assets/js/index.js',
+		styles: './assets/js/styles.js',
 		FirstComp: './assets/js/components/FirstComp.js',
 		main: './assets/js/main.js'
 	},
