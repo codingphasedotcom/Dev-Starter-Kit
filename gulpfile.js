@@ -51,7 +51,7 @@ gulp.task('browser-sync', ['webpack'], function() {
 });
 
 gulp.task('webpack', cb => {
-	exec('webpack --mode development', function(err, stdout, stderr) {
+	exec('npm run dev', function(err, stdout, stderr) {
 		console.log(stdout);
 		console.log(stderr);
 		cb(err);
