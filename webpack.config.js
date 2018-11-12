@@ -13,67 +13,69 @@ for (let compressOption in compress) {
 }
 compress.unused = true;
 
-module.exports = {
-	entry: {
-		styles: './assets/js/styles.js',
-		FirstComp: './assets/js/components/FirstComp.js',
-		main: './assets/js/main.js'
-	},
-	output: {
-		path: path.resolve(__dirname, 'public/dist'),
-		filename: '[name].js' // '[name].[chunkhash].js' put this if you want to get hashed files to cache bust
-	},
-	module: {
-		rules: [
-			{
-				test: /\.js$/,
-				exclude: /node_modules/,
-				use: ['babel-loader', 'prettier-loader']
-			},
-			{
-				test: /\.scss$/,
-				use: [
-					'style-loader',
-					MiniCssExtractPlugin.loader,
-					'css-loader',
-					'sass-loader',
-					'postcss-loader'
-				]
-			}
-		]
-	},
-	plugins: [
-		new CleanWebpackPlugin('public/dist', {}),
-		new MiniCssExtractPlugin({
-			filename: 'styles.css' // 'style.[contenthash].css' put this if you want to get hashed files to cache bust
-		}),
-		// new HtmlWebpackPlugin({
-		// 	inject: false,
-		// 	hash: true,
-		// 	template: './assets/index.html',
-		// 	children: false,
-		// 	filename: '../index.html'
-		// }),
-		new WebpackMd5Hash()
-	],
-	optimization: {
-		splitChunks: {
-			chunks: 'all',
-			minSize: 0
+module.exports = env => {
+	return {
+		entry: {
+			styles: './assets/js/styles.js',
+			FirstComp: './assets/js/components/FirstComp.js',
+			main: './assets/js/main.js'
 		},
-		minimize: true,
-		minimizer: [
-			new UglifyJsPlugin({
-				uglifyOptions: {
-					compress,
-					mangle: false,
-					output: {
-						beautify: true
-					}
+		output: {
+			path: path.resolve(__dirname, 'public/dist'),
+			filename: '[name].js' // '[name].[chunkhash].js' put this if you want to get hashed files to cache bust
+		},
+		module: {
+			rules: [
+				{
+					test: /\.js$/,
+					exclude: /node_modules/,
+					use: ['babel-loader', 'prettier-loader']
+				},
+				{
+					test: /\.scss$/,
+					use: [
+						'style-loader',
+						MiniCssExtractPlugin.loader,
+						'css-loader',
+						'sass-loader',
+						'postcss-loader'
+					]
 				}
-			})
+			]
+		},
+		plugins: [
+			new CleanWebpackPlugin('public/dist', {}),
+			new MiniCssExtractPlugin({
+				filename: 'styles.css' // 'style.[contenthash].css' put this if you want to get hashed files to cache bust
+			}),
+			// new HtmlWebpackPlugin({
+			// 	inject: false,
+			// 	hash: true,
+			// 	template: './assets/index.html',
+			// 	children: false,
+			// 	filename: '../index.html'
+			// }),
+			new WebpackMd5Hash()
 		],
-		usedExports: true,
-		sideEffects: true
-	}
+		optimization: {
+			splitChunks: {
+				chunks: 'all',
+				minSize: 0
+			},
+			minimize: true,
+			minimizer: [
+				new UglifyJsPlugin({
+					uglifyOptions: {
+						compress,
+						mangle: false,
+						output: {
+							beautify: env.NODE_ENV !== 'production' ? true : false
+						}
+					}
+				})
+			],
+			usedExports: true,
+			sideEffects: true
+		}
+	};
 };
