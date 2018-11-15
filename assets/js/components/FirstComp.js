@@ -9,6 +9,7 @@ class Layout extends Component {
 		};
 	}
 	clickedBtn = () => {};
+	async test() {}
 	render() {
 		return (
 			<div className="home">
@@ -30,7 +31,7 @@ class Layout extends Component {
 								</li>
 							</ul>
 						</div>
-						<div className="version-num">version 1.0.0</div>
+						<div className="version-num">version 1.1.0</div>
 						<br />
 						<a
 							className="github-button"
