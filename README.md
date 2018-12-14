@@ -22,7 +22,7 @@ I broke it down in simple steps to get you going.
 On the root of this project run on your terminal (if you want you can do this with yarn but thats optional)
 ```bash
     npm install
-    npm install gulp -g
+    npm install gulp@3.9.1 -g 
     npm install webpack -g
     npm install webpack-cli -g
 ```
