@@ -21,18 +21,13 @@ I broke it down in simple steps to get you going.
  **Install all the node packages** 
 On the root of this project run on your terminal (if you want you can do this with yarn but thats optional)
 ```bash
-    npm install har-validator@latest --save-dev
-    npm install
-    npm install gulp@3.9.1 -g 
-    npm install webpack -g
-    npm install webpack-cli -g
+    sudo npm install har-validator@latest --save-dev
+    sudo npm install
+    sudo npm install gulp@3.9.1 -g 
+    sudo npm install webpack -g
+    sudo npm install webpack-cli -g
 ```
     
- **Update the node packages** 
-On the root of this project run on your terminal (if you want you can do this with yarn but thats optional)
-```bash
-  npm update
-```
 
 **Start the dev server**
 ```bash
