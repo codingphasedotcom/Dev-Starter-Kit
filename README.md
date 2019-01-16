@@ -33,3 +33,17 @@ On the root of this project run on your terminal (if you want you can do this wi
 ```bash
   npm run watch
 ```
+
+**Start the dev server**
+```bash
+  npm run watch
+```
+
+"scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack --mode development --env.NODE_ENV=dev",
+    "build": "gulp build",
+    "build:webpack": "webpack --mode production --env.NODE_ENV=production",
+    "watch": "gulp",
+    "proxy": "gulp"
+  },

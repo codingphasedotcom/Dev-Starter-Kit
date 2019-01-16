@@ -31,7 +31,7 @@ class Layout extends Component {
 								</li>
 							</ul>
 						</div>
-						<div className="version-num">version 3.0.0</div>
+						<div className="version-num">version 2.0.0</div>
 						<br />
 						<a
 							className="github-button"

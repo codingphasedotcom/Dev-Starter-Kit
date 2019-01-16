@@ -18,6 +18,19 @@ gulp.task('default', ['webpack', 'styles', 'browser-sync'], () => {
 		.on('change', reload);
 });
 
+gulp.task('watch-proxy', ['webpack', 'styles', 'browser-sync-proxy'], () => {
+	gulp.watch('./assets/scss/**/*', ['styles']);
+	gulp.watch('./assets/js/**/*', ['webpack']);
+	gulp
+		.watch([
+			'./public/**/*',
+			'./public/*',
+			'!public/js/**/.#*js',
+			'!public/css/**/.#*css'
+		])
+		.on('change', reload);
+});
+
 gulp.task('styles', () => {
 	gulp
 		.src('assets/scss/**/*.scss')
@@ -35,19 +48,22 @@ gulp.task('styles', () => {
 		.pipe(browserSync.stream());
 });
 
-gulp.task('browser-sync', ['webpack'], function() {
-	// THIS IS FOR SITUATIONS WHEN YOU HAVE ANOTHER SERVER RUNNING
-	// browserSync.init({
-	// 	proxy: {
-	// 		target: 'http://localhost:3333/', // can be [virtual host, sub-directory, localhost with port]
-	// 		ws: true // enables websockets
-	// 	}
-	// 	// serveStatic: ['.', './public']
-	// });
+gulp.task('browser-sync', function() {
 	browserSync.init({
 		server: './public',
 		notify: false,
 		open: false //change this to true if you want the broser to open automatically
+	});
+});
+
+gulp.task('browser-sync-proxy', function() {
+	// THIS IS FOR SITUATIONS WHEN YOU HAVE ANOTHER SERVER RUNNING
+	browserSync.init({
+		proxy: {
+			target: 'http://localhost:3333/', // can be [virtual host, sub-directory, localhost with port]
+			ws: true // enables websockets
+		}
+		// serveStatic: ['.', './public']
 	});
 });
 
