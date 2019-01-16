@@ -46,7 +46,8 @@ On the root of this project run on your terminal (if you want you can do this wi
   npm run build
 ```
 
-
+## Instructions to run starter kit on any backend
+Coming Soon
 
 # EACCESS ERROR FIX
 ```diff
@@ -60,5 +61,3 @@ On the root of this project run on your terminal (if you want you can do this wi
 - sudo npm install webpack@4.25.1 -g --unsafe-perm=true --allow-root
 ```
 
-## Instructions to run starter kit on any backend
-Coming Soon
