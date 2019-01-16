@@ -45,7 +45,7 @@ On the root of this project run on your terminal (if you want you can do this wi
 Coming Soon
 
 # EACCESS ERROR FIX
-```
+```diff
 - how to fix the EACCESS ERROR
 - lets say for example you trying to install webpack
 - sudo npm install webpack@4.25.1 -g
