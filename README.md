@@ -26,6 +26,19 @@ On the root of this project run on your terminal (if you want you can do this wi
     sudo npm install webpack@4.25.1 -g
     sudo npm install webpack-cli@3.1.2 -g
 ```
+
+```diff
+- how to fix the EACCESS ERROR
+- lets say for example you trying to install webpack
+- sudo npm install webpack@4.25.1 -g
+- and get an error
+- Error: EACCES: permission denied, mkdir '/usr/local/lib/node_modules/webpack/node_modules/fsevents/build'
+- then try again to install it but with this at the end "--unsafe-perm=true --allow-root"
+- for example
+- sudo npm install webpack@4.25.1 -g --unsafe-perm=true --allow-root
+```
+
+
     
 
 **Start the dev server**
