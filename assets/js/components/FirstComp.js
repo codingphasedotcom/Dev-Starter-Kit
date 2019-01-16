@@ -16,7 +16,7 @@ class Layout extends Component {
 				<div className="Aligner">
 					<div className="Aligner-item">
 						<img src="/img/logo.png" />
-						<h1>Starter-Kit-2k19</h1>
+						<h1>Dev-Starter-Kit</h1>
 						<div className="menu">
 							<ul>
 								<li>
@@ -31,7 +31,7 @@ class Layout extends Component {
 								</li>
 							</ul>
 						</div>
-						<div className="version-num">version 2.0.0</div>
+						<div className="version-num">version 3.0.0</div>
 						<br />
 						<a
 							className="github-button"
