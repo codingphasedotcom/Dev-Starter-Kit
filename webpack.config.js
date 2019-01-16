@@ -16,12 +16,11 @@ compress.unused = true;
 module.exports = env => {
 	return {
 		entry: {
-			styles: './assets/js/styles.js',
 			FirstComp: './assets/js/components/FirstComp.js',
 			main: './assets/js/main.js'
 		},
 		output: {
-			path: path.resolve(__dirname, 'public/dist'),
+			path: path.resolve(__dirname, 'public/js/dist'),
 			filename: '[name].js' // '[name].[chunkhash].js' put this if you want to get hashed files to cache bust
 		},
 		module: {
@@ -44,7 +43,7 @@ module.exports = env => {
 			]
 		},
 		plugins: [
-			new CleanWebpackPlugin('public/dist', {}),
+			new CleanWebpackPlugin('public/js/dist', {}),
 			new MiniCssExtractPlugin({
 				filename: 'styles.css' // 'style.[contenthash].css' put this if you want to get hashed files to cache bust
 			}),

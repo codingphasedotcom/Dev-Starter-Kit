@@ -1,11 +1,13 @@
 const gulp = require('gulp');
+const sass = require('gulp-sass');
+const autoprefixer = require('gulp-autoprefixer');
 const browserSync = require('browser-sync');
 const reload = browserSync.reload;
 var exec = require('child_process').exec;
 
-gulp.task('default', ['webpack', 'browser-sync'], () => {
-	// gulp.watch('./assets/scss/**/*', ['webpack']);
-	gulp.watch('./assets/**/*', ['webpack']);
+gulp.task('default', ['webpack', 'styles', 'browser-sync'], () => {
+	gulp.watch('./assets/scss/**/*', ['styles']);
+	gulp.watch('./assets/js/**/*', ['webpack']);
 	gulp
 		.watch([
 			'./public/**/*',
@@ -16,33 +18,32 @@ gulp.task('default', ['webpack', 'browser-sync'], () => {
 		.on('change', reload);
 });
 
-// gulp.task('styles', () => {
-// 	gulp
-// 		.src('assets/sass/**/*.scss')
-// 		.pipe(
-// 			sass({
-// 				outputStyle: 'compressed'
-// 			}).on('error', sass.logError)
-// 		)
-// 		.pipe(
-// 			autoprefixer({
-// 				browsers: ['last 2 versions']
-// 			})
-// 		)
-// 		.pipe(gulp.dest('./public/css'))
-// 		.pipe(browserSync.stream());
-// });
+gulp.task('styles', () => {
+	gulp
+		.src('assets/scss/**/*.scss')
+		.pipe(
+			sass({
+				outputStyle: 'compressed'
+			}).on('error', sass.logError)
+		)
+		.pipe(
+			autoprefixer({
+				browsers: ['last 2 versions']
+			})
+		)
+		.pipe(gulp.dest('./public/css'))
+		.pipe(browserSync.stream());
+});
 
 gulp.task('browser-sync', ['webpack'], function() {
 	// THIS IS FOR SITUATIONS WHEN YOU HAVE ANOTHER SERVER RUNNING
 	// browserSync.init({
-	//   proxy: {
-	//     target: 'localhost:3000', // can be [virtual host, sub-directory, localhost with port]
-	//     ws: true // enables websockets
-	//   },
-	//   serveStatic: ['.', './public']
-	// })
-
+	// 	proxy: {
+	// 		target: 'http://localhost:3333/', // can be [virtual host, sub-directory, localhost with port]
+	// 		ws: true // enables websockets
+	// 	}
+	// 	// serveStatic: ['.', './public']
+	// });
 	browserSync.init({
 		server: './public',
 		notify: false,
@@ -58,10 +59,10 @@ gulp.task('webpack', cb => {
 	});
 });
 
-// gulp.task('webpack', shell.task([
-//   'webpack'
-// ]))
-
-// gulp.task('server', shell.task([
-//   'yarn run server'
-// ]))
+gulp.task('build', ['styles'], cb => {
+	exec('npm run build:webpack', function(err, stdout, stderr) {
+		console.log(stdout);
+		console.log(stderr);
+		cb(err);
+	});
+});
