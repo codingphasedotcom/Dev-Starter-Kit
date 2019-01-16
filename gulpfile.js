@@ -68,7 +68,7 @@ gulp.task('browser-sync-proxy', function() {
 });
 
 gulp.task('webpack', cb => {
-	exec('npm run dev', function(err, stdout, stderr) {
+	exec('npm run dev:webpack', function(err, stdout, stderr) {
 		console.log(stdout);
 		console.log(stderr);
 		cb(err);

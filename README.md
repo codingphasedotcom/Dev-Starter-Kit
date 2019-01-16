@@ -1,6 +1,5 @@
 # Dev-Starter-Kit
 
-
 So I built this for all the new web developers... My Goal is to save you time from the bullsh*t of spending hours looking for ways to speed up your learning. Sometimes all we want to do is just code.
 (if you are coming from my  [youtube channel CodingPhase ](https://www.youtube.com/channel/UC46wWUso9H5KPQcoL9iE3Ug) I will base all my tutorials from this starter kit)
 
@@ -34,16 +33,17 @@ On the root of this project run on your terminal (if you want you can do this wi
   npm run watch
 ```
 
-**Start the dev server**
+**Start the dev server with proxy**
 ```bash
-  npm run watch
+  npm run proxy
 ```
 
-"scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack --mode development --env.NODE_ENV=dev",
-    "build": "gulp build",
-    "build:webpack": "webpack --mode production --env.NODE_ENV=production",
-    "watch": "gulp",
-    "proxy": "gulp"
-  },
+**Build files for production**
+```bash
+  npm run build
+```
+
+
+
+## Instructions to run starter kit on any backend
+Coming Soon
