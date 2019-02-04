@@ -21,6 +21,7 @@ On the root of this project run on your terminal (if you want you can do this wi
 ```bash
     sudo npm install har-validator@latest --save-dev
     sudo npm install
+    sudo npm install gulp-cli -g
     sudo npm install gulp@3.9.1 -g 
     sudo npm install webpack@4.25.1 -g
     sudo npm install webpack-cli@3.1.2 -g
