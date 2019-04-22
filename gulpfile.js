@@ -32,7 +32,7 @@ gulp.task(
 gulp.task(
 	'webpack:dev',
 	gulp.series(cb => {
-		return exec('npm run dev:webpack', function(err, stdout, stderr) {
+		return exec('npm run dev:webpack', function (err, stdout, stderr) {
 			console.log(stdout);
 			console.log(stderr);
 			cb(err);
@@ -42,7 +42,7 @@ gulp.task(
 gulp.task(
 	'webpack:prod',
 	gulp.series(cb => {
-		return exec('npm run build:webpack', function(err, stdout, stderr) {
+		return exec('npm run build:webpack', function (err, stdout, stderr) {
 			console.log(stdout);
 			console.log(stderr);
 			cb(err);
@@ -52,7 +52,7 @@ gulp.task(
 
 gulp.task(
 	'browser-sync',
-	gulp.series(function() {
+	gulp.series(function () {
 		browserSync.init({
 			server: './public',
 			notify: false,
@@ -63,7 +63,7 @@ gulp.task(
 
 gulp.task(
 	'browser-sync-proxy',
-	gulp.series(function() {
+	gulp.series(function () {
 		// THIS IS FOR SITUATIONS WHEN YOU HAVE ANOTHER SERVER RUNNING
 		browserSync.init({
 			proxy: {
@@ -82,17 +82,31 @@ gulp.task(
 		// uncomment one of these functions depending on what template engine you want to use and comment the one you don't want to use
 		function buildGULPHTML() {
 			return gulp
-				.src('assets/views/**/!(layouts)/*.pug')
+				.src([
+					'assets/views/**/*.pug',
+					'!assets/views/{layouts,layouts/**}',
+					'!assets/views/{includes,includes/**}'
+				])
 				.pipe(pug())
 				.pipe(gulp.dest('./temp'));
-		}
+		},
 		/* =================== */
 		// function buildEDGEHTML() {
 		// 	return gulp
-		// 		.src('assets/views/**/!(layouts)/*.edge')
+		// 		.src([
+		// 			'assets/views/**/*.edge',
+		// 			'!assets/views/{layouts,layouts/**}',
+		// 			'!assets/views/{includes,includes/**}'
+		// 		])
 		// 		.pipe(gulpEdge())
 		// 		.pipe(gulp.dest('./temp'));
-		// }
+		// },
+		function cleanUrl() {
+			return gulp
+				.src('temp/**/*.html')
+				.pipe(prettyUrl())
+				.pipe(gulp.dest('public'));
+		}
 	)
 );
 
@@ -107,15 +121,15 @@ gulp.task(
 	})
 );
 
-gulp.task(
-	'pretty-urls',
-	gulp.series(function() {
-		return gulp
-			.src('temp/**/*.html')
-			.pipe(prettyUrl())
-			.pipe(gulp.dest('public'));
-	})
-);
+// gulp.task(
+// 	'pretty-urls',
+// 	gulp.series(function() {
+// 		return gulp
+// 			.src('temp/**/*.html')
+// 			.pipe(prettyUrl())
+// 			.pipe(gulp.dest('public'));
+// 	})
+// );
 
 gulp.task(
 	'imagemin',
@@ -141,11 +155,12 @@ gulp.task(
 	gulp.parallel([
 		gulp.series([
 			'views',
-			'pretty-urls',
 			'webpack:dev',
 			'styles',
+			'cleanTemp',
 			function runningWatch() {
-				gulp.watch('./assets/views/**/*', gulp.parallel('views'));
+				gulp.watch('./assets/views/**/*', gulp.series('views'));
+				gulp.watch('./assets/views/**/*', gulp.series('cleanTemp'));
 				gulp.watch('./assets/scss/**/*', gulp.parallel('styles'));
 				gulp.watch('./assets/js/**/*', gulp.parallel('webpack:dev'));
 				gulp
@@ -188,8 +203,7 @@ gulp.task(
 gulp.task(
 	'build',
 	gulp.series([
-		gulp.series(['views', 'pretty-urls']),
-		gulp.parallel(['styles', 'webpack:prod']),
-		gulp.series(['cleanTemp'])
+		gulp.series(['views', 'cleanTemp']),
+		gulp.parallel(['styles', 'webpack:prod'])
 	])
 );
