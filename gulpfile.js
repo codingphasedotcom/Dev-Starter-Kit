@@ -8,6 +8,7 @@ const pug = require('gulp-pug');
 const imagemin = require('gulp-imagemin');
 const prettyUrl = require('gulp-pretty-url');
 var del = require('del');
+const gulpEdge = require('gulp-edgejs');
 
 gulp.task(
 	'styles',
@@ -77,12 +78,22 @@ gulp.task(
 // optional this is if you want to create a static website
 gulp.task(
 	'views',
-	gulp.series(function buildHTML() {
-		return gulp
-			.src('assets/views/**/*.pug')
-			.pipe(pug())
-			.pipe(gulp.dest('./temp'));
-	})
+	gulp.series(
+		// uncomment one of these functions depending on what template engine you want to use and comment the one you don't want to use
+		function buildGULPHTML() {
+			return gulp
+				.src('assets/views/**/!(layouts)/*.pug')
+				.pipe(pug())
+				.pipe(gulp.dest('./temp'));
+		}
+		/* =================== */
+		// function buildEDGEHTML() {
+		// 	return gulp
+		// 		.src('assets/views/**/!(layouts)/*.edge')
+		// 		.pipe(gulpEdge())
+		// 		.pipe(gulp.dest('./temp'));
+		// }
+	)
 );
 
 gulp.task(
@@ -90,6 +101,7 @@ gulp.task(
 	gulp.series(() => {
 		return del([
 			'./temp'
+
 			//   '!public/img/**/*'
 		]);
 	})
