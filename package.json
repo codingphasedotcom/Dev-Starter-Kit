@@ -1,11 +1,13 @@
 {
   "name": "codingphase-dev-kit",
-  "version": "3.1.0",
+  "version": "4.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "gulp build",
+    "static-dev": "gulp static-dev",
+    "static-build": "gulp static-dev",
     "dev:webpack": "webpack --mode development --env.NODE_ENV=dev",
     "build:webpack": "webpack --mode production --env.NODE_ENV=production",
     "watch": "gulp",
