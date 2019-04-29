@@ -50,6 +50,22 @@ We updated to version 4.0 of gulp so you should have no problems
   npm run build
 ```
 
+**Optimize Your Images**
+```bash
+  npm run imgs
+```
+
+**Static Site Generator Development**
+```bash
+  npm run static:dev
+```
+
+**Static Site Generator Production**
+```bash
+  npm run static:build
+```
+
+
 ## Instructions to run starter kit on any backend
 Coming Soon
 

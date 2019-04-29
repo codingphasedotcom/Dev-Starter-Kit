@@ -6,12 +6,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "gulp build",
-    "static-dev": "gulp static-dev",
-    "static-build": "gulp static-dev",
     "dev:webpack": "webpack --mode development --env.NODE_ENV=dev",
     "build:webpack": "webpack --mode production --env.NODE_ENV=production",
     "watch": "gulp",
-    "proxy": "gulp watch-proxy"
+    "proxy": "gulp watch-proxy",
+    "static:dev": "gulp static-dev",
+    "static:build": "gulp static-dev",
+    "imgs": "gulp imagemin"
   },
   "author": "",
   "license": "ISC",

@@ -85,7 +85,7 @@ gulp.task(
 // Minimise Your Images
 gulp.task(
 	'imagemin',
-	gulp.series(function buildHTML() {
+	gulp.series(function minizingImages() {
 		return gulp
 			.src('assets/img/**/*')
 			.pipe(
