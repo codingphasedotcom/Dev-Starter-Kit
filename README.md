@@ -22,12 +22,12 @@ I broke it down in simple steps to get you going.
 On the root of this project run on your terminal (if you want you can do this with yarn but thats optional)
 We updated to version 4.0 of gulp so you should have no problems
 ```bash
-    sudo npm install har-validator@latest --save-dev
-    sudo npm install
-    sudo npm install gulp-cli -g
-    sudo npm install gulp 
-    sudo npm install webpack@4.25.1 -g
-    sudo npm install webpack-cli@3.1.2 -g
+    npm install har-validator@latest --save-dev
+    npm install
+    npm install gulp-cli -g
+    npm install gulp 
+    npm install webpack@4.25.1 -g
+    npm install webpack-cli@3.1.2 -g
 ```
 
 **make sure versions of gulp is 4.0**
