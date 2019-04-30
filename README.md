@@ -22,7 +22,6 @@ I broke it down in simple steps to get you going.
 On the root of this project run on your terminal (if you want you can do this with yarn but thats optional)
 We updated to version 4.0 of gulp so you should have no problems
 ```bash
-    npm install har-validator@latest --save-dev
     npm install
     npm install gulp-cli -g
     npm install gulp 
@@ -80,4 +79,7 @@ Coming Soon
 - for example
 - sudo npm install webpack@4.25.1 -g --unsafe-perm=true --allow-root
 ```
+or 
+
+npm install har-validator@latest --save-dev
 
