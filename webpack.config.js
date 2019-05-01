@@ -43,7 +43,6 @@ module.exports = env => {
 			]
 		},
 		plugins: [
-			new CleanWebpackPlugin('public/js/dist', {}),
 			new MiniCssExtractPlugin({
 				filename: 'styles.css' // 'style.[contenthash].css' put this if you want to get hashed files to cache bust
 			}),
