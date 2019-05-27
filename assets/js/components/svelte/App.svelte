@@ -11,7 +11,7 @@
 <div class="home">
     <div class="Aligner">
         <div class="Aligner-item">
-            <img src="/img/logo.png" />
+            <img alt="CodingPhase Logo" src="/img/logo.png" />
             <h1>Dev-Starter-Kit</h1>
             <div class="menu">
                 <ul>
