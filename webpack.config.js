@@ -18,11 +18,17 @@ module.exports = env => {
 		entry: {
 			FirstComp: './assets/js/components/FirstComp.js',
 			SApp: './assets/js/components/svelte/SvelteApp.js',
-			// main: './assets/js/main.js'
+			main: './assets/js/main.js'
 		},
 		output: {
 			path: path.resolve(__dirname, 'public/js/dist'),
-			filename: '[name].js' // '[name].[chunkhash].js' put this if you want to get hashed files to cache bust
+			filename: '[name].js'
+		},
+		resolve: {
+			// see below for an explanation // '[name].[chunkhash].js' put this if you want to get hashed files to cache bust
+			alias: { svelte: path.resolve('node_modules', 'svelte') },
+			extensions: ['.mjs', '.js', '.svelte'],
+			mainFields: ['svelte', 'browser', 'module', 'main']
 		},
 		module: {
 			rules: [
@@ -31,11 +37,7 @@ module.exports = env => {
 					exclude: /node_modules/,
 					use: ['babel-loader', 'prettier-loader']
 				},
-				{
-					test: /\.svelte$/,
-					exclude: /node_modules/,
-					use: 'svelte-loader'
-				},
+				{ test: /\.svelte$/, exclude: /node_modules/, use: 'svelte-loader' },
 				{
 					test: /\.scss$/,
 					use: [
@@ -51,8 +53,7 @@ module.exports = env => {
 		plugins: [
 			new MiniCssExtractPlugin({
 				filename: 'styles.css' // 'style.[contenthash].css' put this if you want to get hashed files to cache bust
-			}),
-			// new HtmlWebpackPlugin({
+			}), // new HtmlWebpackPlugin({
 			// 	inject: false,
 			// 	hash: true,
 			// 	template: './assets/index.html',
@@ -62,10 +63,7 @@ module.exports = env => {
 			new WebpackMd5Hash()
 		],
 		optimization: {
-			splitChunks: {
-				chunks: 'all',
-				minSize: 0
-			},
+			splitChunks: { chunks: 'all', minSize: 0 },
 			minimize: true,
 			minimizer: [
 				new UglifyJsPlugin({

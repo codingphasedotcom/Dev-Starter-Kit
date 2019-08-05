@@ -6,7 +6,7 @@
         var moduleId, chunkId, i = 0, resolves = [];
         for (;i < chunkIds.length; i++) {
             chunkId = chunkIds[i];
-            if (installedChunks[chunkId]) resolves.push(installedChunks[chunkId][0]);
+            if (Object.prototype.hasOwnProperty.call(installedChunks, chunkId) && installedChunks[chunkId]) resolves.push(installedChunks[chunkId][0]);
             installedChunks[chunkId] = 0;
         }
         for (moduleId in moreModules) if (Object.prototype.hasOwnProperty.call(moreModules, moduleId)) modules[moduleId] = moreModules[moduleId];

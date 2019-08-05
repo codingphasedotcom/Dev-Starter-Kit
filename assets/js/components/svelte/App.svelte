@@ -1,6 +1,7 @@
 <script>
     import Header from './Header.svelte';
     export let name;
+    console.log('swag')
 </script>
 <style>
     h1 {
