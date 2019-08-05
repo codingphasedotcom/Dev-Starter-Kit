@@ -161,7 +161,7 @@ gulp.task(
 					'!assets/views/{layouts,layouts/**}',
 					'!assets/views/{includes,includes/**}'
 				])
-				.pipe(pug())
+				.pipe(pug({ pretty: true }))
 				.pipe(gulp.dest('./temp'));
 		},
 		/* =================== */

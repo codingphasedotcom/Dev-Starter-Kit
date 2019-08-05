@@ -15,7 +15,7 @@ class Layout extends Component {
 			<div className="home">
 				<div className="Aligner">
 					<div className="Aligner-item">
-						<img src="/img/logo.png" />
+						<img src="/img/logo.png" alt="codingphase logo" />
 						<h1>Dev-Starter-Kit</h1>
 						<div className="menu">
 							<ul>
@@ -32,19 +32,6 @@ class Layout extends Component {
 							</ul>
 						</div>
 						<div className="version-num">version 4.0.0</div>
-						<br />
-						<a
-							className="github-button"
-							href="https://github.com/codingphasedotcom/Starter-Kit-2019"
-							data-icon="octicon-star"
-							data-style="mega"
-							data-count-href="/codingphasedotcom/rocky/stargazers"
-							data-count-api="/repos/codingphasedotcom/rocky#stargazers_count"
-							data-count-aria-label="# stargazers on GitHub"
-							aria-label="Star codingphasedotcom/rocky on GitHub"
-						>
-							Star
-						</a>
 					</div>
 				</div>
 			</div>

@@ -1,6 +1,33 @@
 extends layouts/app 
 
+block seo 
+  title CodingPhase - Learn To Code and Get Paid ASAP!
+  meta(property='og:title', content='CodingPhase - Learn To Code and Get Paid ASAP!')
+  meta(name='description', content='Learn how to code from the best platform by building real projects that will help you land the dream job and get a high paying salary')
+  meta(property='og:description', content='Learn how to code from the best platform by building real projects that will help you land the dream job and get a high paying salary')
+  meta(property='og:image', content='https://codingphase.com/img/websitethumb.png')
+  meta(name='twitter:card', content='summary_large_image')
+  meta(property='og:site_name', content='CodingPhase LLC')
+  meta(name='twitter:image:alt', content='Learn how to code from one of the best platforms online.')
+  meta(name='twitter:site', content='@codingphase')
+  meta(property='og:url', content='https://codingphase.com')
+  link(rel="canonical" href="/")
+
 block content
-  #app 
+  #app
+    .home
+      .Aligner
+        .Aligner-item
+          img(src='/img/logo.png', alt='codingphase logo')
+          h1 Dev-Starter-Kit
+          .menu
+            ul
+              li
+                a(href='http://starterkit.codingphase.com', target='new') Documentation
+              li
+                a(href='http://www.codingphase.com', target='new') CodingPhase.Com
+          .version-num version 4.0.0
+      
   script(src='/js/dist/vendors~FirstComp.js')
   script(src='/js/dist/FirstComp.js')
+  script(src='/js/dist/main.js')

@@ -1,0 +1,32 @@
+{
+  "name": "CodingPhase",
+  "short_name": "CodingPhase",
+  "background_color": "#ad38f1",
+  "theme_color": "#ad38f1",
+  "start_url": "/",
+  "description": "A platform to learn how to code",
+  "orientation": "any",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "img/icons/128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "img/icons/256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "img/icons/512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "img/icons/1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    }
+  ]
+}
