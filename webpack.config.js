@@ -17,7 +17,8 @@ module.exports = env => {
 	return {
 		entry: {
 			FirstComp: './assets/js/components/FirstComp.js',
-			main: './assets/js/main.js'
+			SApp: './assets/js/components/svelte/SvelteApp.js',
+			// main: './assets/js/main.js'
 		},
 		output: {
 			path: path.resolve(__dirname, 'public/js/dist'),
@@ -29,6 +30,11 @@ module.exports = env => {
 					test: /\.js$/,
 					exclude: /node_modules/,
 					use: ['babel-loader', 'prettier-loader']
+				},
+				{
+					test: /\.svelte$/,
+					exclude: /node_modules/,
+					use: 'svelte-loader'
 				},
 				{
 					test: /\.scss$/,
