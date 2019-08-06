@@ -11,7 +11,7 @@
     "watch": "gulp",
     "proxy": "gulp watch-proxy",
     "static:dev": "gulp static-dev",
-    "static:build": "gulp static-dev",
+    "static:build": "gulp static-build",
     "imgs": "gulp imagemin"
   },
   "author": "",
