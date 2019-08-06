@@ -3,7 +3,7 @@ const cachNameToKeep = 'codingphase-2-2-19';
 
 //Deletion should only occur at the activate event
 self.addEventListener('activate', event => {
-	var cacheKeeplist = [cacheName];
+	var cacheKeeplist = [cachNameToKeep];
 	event.waitUntil(
 		caches
 			.keys()
