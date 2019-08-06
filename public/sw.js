@@ -19,7 +19,7 @@ self.addEventListener('activate', event => {
 			.then(self.clients.claim())
 	); //this line is important in some contexts
 });
-
+// make sure to uncomment this section below to have your dev starter kit cache everything and becoming a progressive web app
 // self.addEventListener('install', function(e) {
 // 	e.waitUntil(
 // 		caches.open(cachNameToKeep).then(function(cache) {
