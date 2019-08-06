@@ -20,23 +20,23 @@ self.addEventListener('activate', event => {
 	); //this line is important in some contexts
 });
 
-self.addEventListener('install', function(e) {
-	e.waitUntil(
-		caches.open(cachNameToKeep).then(function(cache) {
-			return cache.addAll([
-				'/',
-				'/index.html',
-				// '/offline.html',
-				'/css/styles.css'
-			]);
-		})
-	);
-});
+// self.addEventListener('install', function(e) {
+// 	e.waitUntil(
+// 		caches.open(cachNameToKeep).then(function(cache) {
+// 			return cache.addAll([
+// 				'/',
+// 				'/index.html',
+// 				// '/offline.html',
+// 				'/css/styles.css'
+// 			]);
+// 		})
+// 	);
+// });
 
-self.addEventListener('fetch', function(event) {
-	event.respondWith(
-		caches.match(event.request).then(function(response) {
-			return response || fetch(event.request);
-		})
-	);
-});
+// self.addEventListener('fetch', function(event) {
+// 	event.respondWith(
+// 		caches.match(event.request).then(function(response) {
+// 			return response || fetch(event.request);
+// 		})
+// 	);
+// });
