@@ -19,19 +19,24 @@ I broke it down in simple steps to get you going.
 	https://atom.io/
 
  **Install all the node packages** 
-On the root of this project run on your terminal (if you want you can do this with yarn but thats optional)
+In the root of this project run on your terminal (if you want you can do this with yarn but thats optional)
 We updated to version 4.0 of gulp so you should have no problems
 ```bash
-    npm install
     npm install gulp-cli -g
     npm install gulp 
     npm install webpack@4.25.1 -g
     npm install webpack-cli@3.1.2 -g
+    npm install
 ```
 
-**make sure versions of gulp is 4.0**
+**Make sure your version of gulp is 4.0**
 ```bash
-    gulp -v 
+    gulp -v    
+```
+
+**Make sure webpack is installed**
+```bash
+  webpack -v
 ```
 
 **Start the dev server**
