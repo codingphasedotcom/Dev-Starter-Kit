@@ -1,6 +1,6 @@
 {
   "name": "codingphase-dev-kit",
-  "version": "4.0.0",
+  "version": "4.0.2",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -38,7 +38,7 @@
     "gulp-edgejs": "^0.2.4",
     "gulp-imagemin": "^5.0.3",
     "gulp-pretty-url": "^0.1.1",
-    "gulp-sass": "^3.0.0",
+    "gulp-sass": "^3.2.1",
     "har-validator": "^5.1.3",
     "html-webpack-plugin": "^3.2.0",
     "jest": "^24.8.0",
