@@ -62,7 +62,8 @@ gulp.task(
 		browserSync.init({
 			server: './public',
 			notify: false,
-			open: false //change this to true if you want the broser to open automatically
+			open: false, //change this to true if you want the broser to open automatically
+			injectChanges: false
 		});
 	})
 );
