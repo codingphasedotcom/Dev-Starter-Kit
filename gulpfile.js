@@ -3,11 +3,11 @@ const sass = require('gulp-sass');
 const autoprefixer = require('gulp-autoprefixer');
 const browserSync = require('browser-sync');
 const reload = browserSync.reload;
-var exec = require('child_process').exec;
+const exec = require('child_process').exec;
 const pug = require('gulp-pug');
 const imagemin = require('gulp-imagemin');
 const prettyUrl = require('gulp-pretty-url');
-var del = require('del');
+const del = require('del');
 const gulpEdge = require('gulp-edgejs');
 
 // Compiles SCSS To CSS
