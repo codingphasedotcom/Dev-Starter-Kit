@@ -13,13 +13,13 @@ const reload = browserSync.reload;
 
 
 // Compiles SCSS To CSS
-export const styles = gulp.series(() => {
+export const styles = gulp.series(async () => {
 	return gulp
 		.src('assets/scss/**/*.scss')
 		.pipe(
 			sass({
 				outputStyle: 'compressed'
-			}).on('error', sass.logError)
+			})
 		)
 		.pipe(
 			autoprefixer({
@@ -32,24 +32,24 @@ export const styles = gulp.series(() => {
 
 // Use Webpack to compile latest Javascript to ES5
 // Webpack on Development Mode
-export const webpackDev = gulp.series(cb => {
-	return exec('npm run dev:webpack', function(err, stdout, stderr) {
-		console.log(stdout);
-		console.log(stderr);
-		cb(err);
-	});
+export const webpackDev = gulp.series(async function() {
+    try {
+        await exec('npm run dev:webpack');
+    } catch (err) {
+        console.error(err);
+    }
 });
 // Webpack on Production Mode
-export const webpackProd = gulp.series(cb => {
-	return exec('npm run build:webpack', function(err, stdout, stderr) {
-		console.log(stdout);
-		console.log(stderr);
-		cb(err);
-	});
+export const webpackProd = gulp.series(async function() {
+    try {
+        await exec('npm run build:webpack');
+    } catch (err) {
+        console.error(err);
+    }
 });
 
 // Browser-sync to get live reload and sync with mobile devices
-export const browsersync = gulp.series(function() {
+export const browsersync = gulp.series(async function() {
 	browserSync.init({
 		server: './public',
 		notify: false,
@@ -59,7 +59,7 @@ export const browsersync = gulp.series(function() {
 });
 
 // Use Browser Sync With Any Type Of Backend
-export const browserSyncProxy = gulp.series(function() {
+export const browserSyncProxy = gulp.series(async function() {
 	// THIS IS FOR SITUATIONS WHEN YOU HAVE ANOTHER SERVER RUNNING
 	browserSync.init({
 		proxy: {
@@ -88,15 +88,14 @@ export const imageMin = () => {
 };
 
 // This is your Default Gulp task
-export const start = gulp.series(
-  webpackDev,
-  styles,
-  function watch() {
-    gulp.watch('./assets/scss/**/*', styles);
-    gulp.watch('./assets/js/**/*', webpackDev);
-    gulp.watch(['./public/**/*', './public/*']).on('change', reload);
-  },
-  browsersync
+export const start = gulp.series(webpackDev, styles, browsersync, function watch() {
+		gulp.watch('./assets/scss/**/*', styles);
+		gulp.watch('./assets/js/**/*', webpackDev);
+		gulp.watch(['./public/**/*', './public/*']).on('change', reload);
+	},
+	() => {
+    return;
+  }
 );
 
 // This is the task when running on a backend like PHP, PYTHON, GO, etc..
@@ -135,19 +134,20 @@ const buildTemplate = (templateEngine) => {
     .pipe(gulp.dest('./temp'));
 };
 
-export const cleanUrls = gulp.series(function cleanUrl() {
-	return gulp
-		.src('temp/**/*.html')
-		.pipe(prettyUrl())
-		.pipe(gulp.dest('public'));
+export const cleanUrls = gulp.series(() => {
+  return gulp
+    .src('temp/**/*.html')
+    .pipe(prettyUrl())
+    .pipe(gulp.dest('public'))
+    .on('end', () => {
+      return;
+    });
 });
 
-const selectedEngine = process.env.TEMPLATE_ENGINE || 'pug';
-
-export const views = gulp.series(buildTemplate(selectedEngine), cleanUrls);
+export const views = gulp.series(buildTemplate(process.env.TEMPLATE_ENGINE || 'pug'), cleanUrls);
 
 // Delete Your Temp Files
-export const cleanTemp = gulp.series(() => {
+export const cleanTemp = gulp.series(async () => {
 	return del([
 		'./temp'
 
