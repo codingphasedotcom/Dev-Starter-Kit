@@ -11,96 +11,91 @@ import gulpEdge from 'gulp-edgejs';
 
 const reload = browserSync.reload;
 
-
 // Compiles SCSS To CSS
-export const styles = gulp.series(async () => {
-	return gulp
-		.src('assets/scss/**/*.scss')
-		.pipe(
-			sass({
-				outputStyle: 'compressed'
-			})
-		)
-		.pipe(
-			autoprefixer({
-				browsers: ['last 2 versions']
-			})
-		)
-		.pipe(gulp.dest('./public/css'))
-		.pipe(browserSync.stream());
-});
+const styles = async () => {
+  return gulp
+    .src('assets/scss/**/*.scss')
+    .pipe(
+      sass({
+        outputStyle: 'compressed'
+      })
+    )
+    .pipe(
+      autoprefixer({
+        browsers: ['last 2 versions']
+      })
+    )
+    .pipe(gulp.dest('./public/css'))
+    .pipe(browserSync.stream());
+};
 
-// Use Webpack to compile latest Javascript to ES5
+/ Use Webpack to compile latest Javascript to ES5
 // Webpack on Development Mode
-export const webpackDev = gulp.series(async function() {
-    try {
-        await exec('npm run dev:webpack');
-    } catch (err) {
-        console.error(err);
-    }
-});
+const webpackDev = async () => {
+  try {
+    await exec('npm run dev:webpack');
+  } catch (err) {
+    console.error(err);
+  }
+};
 // Webpack on Production Mode
-export const webpackProd = gulp.series(async function() {
-    try {
-        await exec('npm run build:webpack');
-    } catch (err) {
-        console.error(err);
-    }
-});
+const webpackProd = async () => {
+  try {
+    await exec('npm run build:webpack');
+  } catch (err) {
+    console.error(err);
+  }
+};
 
 // Browser-sync to get live reload and sync with mobile devices
-export const browsersync = gulp.series(async function() {
-	browserSync.init({
-		server: './public',
-		notify: false,
-		open: false, //change this to true if you want the broser to open automatically
-		injectChanges: false
-	});
-});
-
+const browsersync = async () => {
+  browserSync.init({
+    server: './public',
+    notify: false,
+    open: false,
+    injectChanges: false
+  });
+};
 // Use Browser Sync With Any Type Of Backend
-export const browserSyncProxy = gulp.series(async function() {
-	// THIS IS FOR SITUATIONS WHEN YOU HAVE ANOTHER SERVER RUNNING
-	browserSync.init({
-		proxy: {
-			target: 'http://localhost:3333/', // can be [virtual host, sub-directory, localhost with port]
-			ws: true // enables websockets
-		}
-		// serveStatic: ['.', './public']
-	});
-});
+const browserSyncProxy = async () => {
+  browserSync.init({
+    proxy: {
+      target: 'http://localhost:3333/',
+      ws: true
+    }
+  });
+};
 
 // Minimise Your Images
-export const imageMin = () => {
-	return gulp
-		.src('assets/img/**/*')
-		.pipe(
-			imagemin([
-				imagemin.gifsicle({ interlaced: true }),
-				imagemin.jpegtran({ progressive: true }),
-				imagemin.optipng({ optimizationLevel: 5 }),
-				imagemin.svgo({
-					plugins: [{ removeViewBox: true }, { cleanupIDs: false }]
-				})
-			])
-		)
-		.pipe(gulp.dest('./public/img'));
+const imageMin = () => {
+  return gulp
+    .src('assets/img/**/*')
+    .pipe(
+      imagemin([
+        imagemin.gifsicle({ interlaced: true }),
+        imagemin.jpegtran({ progressive: true }),
+        imagemin.optipng({ optimizationLevel: 5 }),
+        imagemin.svgo({
+          plugins: [{ removeViewBox:
+          removeViewBox: true
+        }, {
+          cleanupIDs: false
+        }]
+      })
+    )
+    .pipe(gulp.dest('./public/img'));
 };
 
 // This is your Default Gulp task
-export const start = gulp.series(webpackDev, styles, browsersync, function watch() {
-		gulp.watch('./assets/scss/**/*', styles);
-		gulp.watch('./assets/js/**/*', webpackDev);
-		gulp.watch(['./public/**/*', './public/*']).on('change', reload);
-	},
-	() => {
-    return;
-  }
-);
+const start = gulp.series(webpackDev, styles, browsersync, () => {
+  gulp.watch('./assets/scss/**/*', styles);
+  gulp.watch('./assets/js/**/*', webpackDev);
+  gulp.watch(['./public/**/*', './public/*']).on('change', reload);
+});
 
 // This is the task when running on a backend like PHP, PYTHON, GO, etc..
-export const watchProxy = gulp.parallel(
-  gulp.series(webpackDev, styles, function runningWatch() {
+const watchProxy = gulp.parallel(
+  gulp.series(webpackDev, styles, () => {
     gulp.watch('./assets/scss/**/*', styles);
     gulp.watch('./assets/js/**/*', webpackDev);
     gulp.watch(['./public/**/*', './public/*']).on('change', reload);
@@ -109,7 +104,7 @@ export const watchProxy = gulp.parallel(
 );
 
 // This is the production build for your app
-export const build = gulp.series(gulp.parallel(styles, webpackProd));
+const build = gulp.series(gulp.parallel(styles, webpackProd));
 
 /*
 |--------------------------------------------------------------------------
@@ -134,7 +129,7 @@ const buildTemplate = (templateEngine) => {
     .pipe(gulp.dest('./temp'));
 };
 
-export const cleanUrls = gulp.series(() => {
+const cleanUrls = () => {
   return gulp
     .src('temp/**/*.html')
     .pipe(prettyUrl())
@@ -142,36 +137,34 @@ export const cleanUrls = gulp.series(() => {
     .on('end', () => {
       return;
     });
-});
+};
 
-export const views = gulp.series(buildTemplate(process.env.TEMPLATE_ENGINE || 'pug'), cleanUrls);
+const views = gulp.series(buildTemplate(process.env.TEMPLATE_ENGINE || 'pug'), cleanUrls);
 
 // Delete Your Temp Files
-export const cleanTemp = gulp.series(async () => {
-	return del([
-		'./temp'
-
-		//   '!public/img/**/*'
-	]);
-});
+const cleanTemp = async () => {
+  return del([
+    './temp'
+  ]);
+};
 
 // Tasks to generate site on development this will also have live reload
-export const staticDev = gulp.series(
-	views,
-	webpackDev,
-	styles,
-	cleanTemp,
-	function runningWatch() {
-		gulp.watch('./assets/views/**/*', gulp.series(views, cleanTemp));
-		gulp.watch('./assets/scss/**/*', styles);
-		gulp.watch('./assets/js/**/*', webpackDev);
-		gulp.watch(['./public/**/*', './public/*']).on('change', reload);
-	},
-	browsersync
+const staticDev = gulp.series(
+  views,
+  webpackDev,
+  styles,
+  cleanTemp,
+  () => {
+    gulp.watch('./assets/views/**/*', gulp.series(views, cleanTemp));
+    gulp.watch('./assets/scss/**/*', styles);
+    gulp.watch('./assets/js/**/*', webpackDev);
+    gulp.watch(['./public/**/*', './public/*']).on('change', reload);
+  },
+  browsersync
 );
 
 // this will run your static site for production
-export const staticBuild = gulp.series(
-	gulp.series(views, cleanTemp),
-	gulp.parallel([styles, webpackProd])
+const staticBuild = gulp.series(
+  gulp.series(views, cleanTemp),
+  gulp.parallel([styles, webpackProd])
 );
