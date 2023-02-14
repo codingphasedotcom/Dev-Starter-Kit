@@ -1,4 +1,5 @@
 import gulp from 'gulp';
+const { parallel, series } = gulp;
 import sass from 'gulp-sass';
 import autoprefixer from 'gulp-autoprefixer';
 import browserSync from 'browser-sync';
@@ -12,159 +13,242 @@ import gulpEdge from 'gulp-edgejs';
 const reload = browserSync.reload;
 
 // Compiles SCSS To CSS
-const styles = async () => {
-  return gulp
-    .src('assets/scss/**/*.scss')
-    .pipe(
-      sass({
-        outputStyle: 'compressed'
-      })
-    )
-    .pipe(
-      autoprefixer({
-        browsers: ['last 2 versions']
-      })
-    )
-    .pipe(gulp.dest('./public/css'))
-    .pipe(browserSync.stream());
-};
+function compileStyles() {
+    return gulp
+        .src('assets/scss/**/*.scss')
+        .pipe(sass({
+            outputStyle: 'compressed'
+        }).on('error', sass.logError))
+        .pipe(
+            autoprefixer({
+                overrideBrowserslist: ['last 2 versions']
+            })
+        )
+        .pipe(gulp.dest('./public/css'))
+        .on('error', (err) => {
+            console.log(`Error in styles task: ${err.message}`);
+        })
+        .pipe(browserSync.stream())
+        .on('error', (err) => {
+            console.log(`Error in styles task: ${err.message}`);
+        });
+}
+gulp.task('styles', compileStyles);
 
-/ Use Webpack to compile latest Javascript to ES5
+// Use Webpack to compile latest Javascript to ES5
 // Webpack on Development Mode
-const webpackDev = async () => {
-  try {
-    await exec('npm run dev:webpack');
-  } catch (err) {
-    console.error(err);
-  }
-};
+function runWebpackDev(cb) {
+    exec('npm run dev:webpack', function (err, stdout, stderr) {
+        console.log(stdout);
+        console.log(stderr);
+        if (err) {
+            console.log(`Error in webpack:dev task: ${err.message}`);
+        }
+        cb(err);
+    });
+}
+gulp.task('webpack:dev', series(runWebpackDev));
+
 // Webpack on Production Mode
-const webpackProd = async () => {
-  try {
-    await exec('npm run build:webpack');
-  } catch (err) {
-    console.error(err);
-  }
-};
+function runWebpackProd(cb) {
+    exec('npm run build:webpack', function (err, stdout, stderr) {
+        console.log(stdout);
+        console.log(stderr);
+        cb(err);
+    });
+}
+gulp.task('webpack:prod', series(runWebpackProd));
 
 // Browser-sync to get live reload and sync with mobile devices
-const browsersync = async () => {
-  browserSync.init({
-    server: './public',
-    notify: false,
-    open: false,
-    injectChanges: false
-  });
-};
-// Use Browser Sync With Any Type Of Backend
-const browserSyncProxy = async () => {
-  browserSync.init({
-    proxy: {
-      target: 'http://localhost:3333/',
-      ws: true
+function initBrowserSync() {
+    try {
+        browserSync.init({
+            server: './public',
+            notify: false,
+            open: false,
+            injectChanges: false
+        });
+    } catch (err) {
+        console.error('Error initializing browser-sync: ', err);
     }
+}
+gulp.task('browser-sync', series(initBrowserSync));
+
+// Use Browser Sync With Any Type Of Backend
+function proxyBrowserSync() {
+    // THIS IS FOR SITUATIONS WHEN YOU HAVE ANOTHER SERVER RUNNING
+    try {
+        browserSync.init({
+            proxy: {
+                target: 'http://localhost:3333/',
+                ws: true
+            }
+        });
+    } catch (err) {
+        console.error('Error initializing browser-sync with proxy: ', err);
+    }
+}
+gulp.task('browser-sync-proxy', series(proxyBrowserSync));
+
+// Minimize Your Images
+function minimizeImages() {
+    try {
+        return gulp
+            .src('assets/img/**/*')
+            .pipe(imagemin([
+                imagemin.gifsicle({ interlaced: true }),
+                imagemin.jpegtran({ progressive: true }),
+                imagemin.optipng({ optimizationLevel: 5 }),
+                imagemin.svgo({
+                    plugins: [{ removeViewBox: true }, { cleanupIDs: false }]
+                })
+            ]))
+            .pipe(gulp.dest('./public/img'));
+    } catch (err) {
+        console.error('Error minimizing images: ', err);
+    }
+}
+gulp.task('imagemin', series(minimizeImages));
+
+// Default Gulp task
+function defaultTask() {
+  return parallel(
+    series(
+      'webpack:dev',
+      'styles',
+      function watch() {
+        gulp.watch('./assets/scss/**/*', parallel('styles'));
+        gulp.watch('./assets/js/**/*', parallel('webpack:dev'));
+        gulp.watch(['./public/**/*', './public/*']).on('change', browserSync.reload);
+      }
+    ),
+    series('browser-sync')
+  ).on('error', function (err) {
+    console.error(err.message);
+    this.emit('end');
   });
-};
+}
+gulp.task('default', defaultTask);
 
-// Minimise Your Images
-const imageMin = () => {
-  return gulp
-    .src('assets/img/**/*')
-    .pipe(
-      imagemin([
-        imagemin.gifsicle({ interlaced: true }),
-        imagemin.jpegtran({ progressive: true }),
-        imagemin.optipng({ optimizationLevel: 5 }),
-        imagemin.svgo({
-          plugins: [{ removeViewBox:
-          removeViewBox: true
-        }, {
-          cleanupIDs: false
-        }]
-      })
-    )
-    .pipe(gulp.dest('./public/img'));
-};
+// Gulp task when running on a backend like PHP, PYTHON, GO, etc..
+function watchProxy() {
+  return parallel(
+    series(
+      'webpack:dev',
+      'styles',
+      function watch() {
+        gulp.watch('./assets/scss/**/*', parallel('styles'));
+        gulp.watch('./assets/js/**/*', parallel('webpack:dev'));
+        gulp.watch(['./public/**/*', './public/*']).on('change', browserSync.reload);
+      }
+    ),
+    series('browser-sync-proxy')
+  ).on('error', function (err) {
+    console.error(err.message);
+    this.emit('end');
+  });
+}
+gulp.task('watch-proxy', watchProxy);
 
-// This is your Default Gulp task
-const start = gulp.series(webpackDev, styles, browsersync, () => {
-  gulp.watch('./assets/scss/**/*', styles);
-  gulp.watch('./assets/js/**/*', webpackDev);
-  gulp.watch(['./public/**/*', './public/*']).on('change', reload);
-});
+// Production build for your app
+function build() {
+  return series(
+    parallel('styles', 'webpack:prod')
+  ).on('error', function (err) {
+    console.error(err.message);
+    this.emit('end');
+  });
+}
+gulp.task('build', build);
 
-// This is the task when running on a backend like PHP, PYTHON, GO, etc..
-const watchProxy = gulp.parallel(
-  gulp.series(webpackDev, styles, () => {
-    gulp.watch('./assets/scss/**/*', styles);
-    gulp.watch('./assets/js/**/*', webpackDev);
-    gulp.watch(['./public/**/*', './public/*']).on('change', reload);
-  }),
-  browserSyncProxy
-);
-
-// This is the production build for your app
-const build = gulp.series(gulp.parallel(styles, webpackProd));
-
-/*
-|--------------------------------------------------------------------------
-| Static Site Generator
-|--------------------------------------------------------------------------
-|
-| Run These commands below for static site generator
-|	optional this is if you want to create a static website
-|
-*/
-//
-
-// Generate HTML From Pug or Edge Template Engines
-const buildTemplate = (templateEngine) => {
-  return gulp
-    .src([
-      'assets/views/**/*.' + templateEngine,
-      '!assets/views/{layouts,layouts/**}',
-      '!assets/views/{includes,includes/**}'
-    ])
-    .pipe(templateEngine === 'pug' ? pug({ pretty: true }) : gulpEdge())
-    .pipe(gulp.dest('./temp'));
-};
-
-const cleanUrls = () => {
-  return gulp
-    .src('temp/**/*.html')
-    .pipe(prettyUrl())
-    .pipe(gulp.dest('public'))
-    .on('end', () => {
-      return;
-    });
-};
-
-const views = gulp.series(buildTemplate(process.env.TEMPLATE_ENGINE || 'pug'), cleanUrls);
+// Static Site Generator
+function views() {
+  function buildGulpHtml() {
+    try {
+      return gulp
+        .src([
+          'assets/views/**/*.pug',
+          '!assets/views/{layouts,layouts/**}',
+          '!assets/views/{includes,includes/**}',
+        ])
+        .pipe(pug({ pretty: true }))
+        .pipe(gulp.dest('./temp'));
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+  function cleanUrl() {
+    try {
+      return gulp
+        .src('temp/**/*.html')
+        .pipe(prettyUrl())
+        .pipe(gulp.dest('public'));
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+  return series(buildGulpHtml, cleanUrl);
+}
+gulp.task('views', views);
 
 // Delete Your Temp Files
-const cleanTemp = async () => {
-  return del([
-    './temp'
-  ]);
-};
+function cleanTemp() {
+  try {
+    return del(['./temp']);
+  } catch (err) {
+    console.error(err.message);
+  }
+}
+gulp.task('cleanTemp', cleanTemp);
 
 // Tasks to generate site on development this will also have live reload
-const staticDev = gulp.series(
-  views,
-  webpackDev,
-  styles,
-  cleanTemp,
-  () => {
-    gulp.watch('./assets/views/**/*', gulp.series(views, cleanTemp));
-    gulp.watch('./assets/scss/**/*', styles);
-    gulp.watch('./assets/js/**/*', webpackDev);
-    gulp.watch(['./public/**/*', './public/*']).on('change', reload);
-  },
-  browsersync
-);
+function staticDev() {
+  return parallel(
+    series(
+      'views',
+      'webpack:dev',
+      'styles',
+      'cleanTemp',
+      function watch() {
+        // Watch for changes in views
+        gulp.watch('./assets/views/**/*', series('views', 'cleanTemp'))
+          .on('error', function handleError(error) {
+            console.log(error);
+            this.emit('end');
+          });
+
+        // Watch for changes in styles
+        gulp.watch('./assets/scss/**/*', parallel('styles'))
+          .on('error', function handleError(error) {
+            console.log(error);
+            this.emit('end');
+          });
+
+        // Watch for changes in JS files
+        gulp.watch('./assets/js/**/*', parallel('webpack:dev'))
+          .on('error', function handleError(error) {
+            console.log(error);
+            this.emit('end');
+          });
+
+        // Reload the browser when changes are made to the public folder
+        gulp.watch(['./public/**/*', './public/*']).on('change', browserSync.reload)
+          .on('error', function handleError(error) {
+            console.log(error);
+            this.emit('end');
+          });
+      }
+    ),
+    series('browser-sync')
+  )
+}
+gulp.task('static-dev', staticDev);
 
 // this will run your static site for production
-const staticBuild = gulp.series(
-  gulp.series(views, cleanTemp),
-  gulp.parallel([styles, webpackProd])
-);
+function staticBuild() {
+    return series(
+        series('views', 'cleanTemp'),
+        parallel('styles', 'webpack:prod')
+    ).on('error', console.error.bind(console)); // add error handling for all tasks
+}
+gulp.task('static-build', staticBuild);
