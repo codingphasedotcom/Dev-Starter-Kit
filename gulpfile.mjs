@@ -38,7 +38,7 @@ gulp.task('styles', compileStyles);
 // Use Webpack to compile latest Javascript to ES5
 // Webpack on Development Mode
 function runWebpackDev(cb) {
-    exec('npm run dev:webpack', function (err, stdout, stderr) {
+    exec('NODE_ENV=dev webpack --mode development', function (err, stdout, stderr) {
         console.log(stdout);
         console.log(stderr);
         if (err) {
@@ -111,23 +111,22 @@ function minimizeImages() {
 gulp.task('imagemin', series(minimizeImages));
 
 // Default Gulp task
-function defaultTask() {
-  return parallel(
-    series(
-      'webpack:dev',
-      'styles',
-      function watch() {
-        gulp.watch('./assets/scss/**/*', parallel('styles'));
-        gulp.watch('./assets/js/**/*', parallel('webpack:dev'));
+function defaultTask(cb) {
+    const watch = () => {
+        gulp.watch('./assets/scss/**/*', gulp.parallel('styles'));
+        gulp.watch('./assets/js/**/*', gulp.series('webpack:dev'));
         gulp.watch(['./public/**/*', './public/*']).on('change', browserSync.reload);
-      }
-    ),
-    series('browser-sync')
-  ).on('error', function (err) {
-    console.error(err.message);
-    this.emit('end');
-  });
+    };
+
+    const dev = gulp.series('webpack:dev', 'styles', watch);
+    const browserSyncInit = gulp.series(initBrowserSync);
+
+    gulp.task('dev', dev);
+    gulp.task('browserSyncInit', browserSyncInit);
+
+    return gulp.parallel('dev', 'browserSyncInit')(cb);
 }
+
 gulp.task('default', defaultTask);
 
 // Gulp task when running on a backend like PHP, PYTHON, GO, etc..
