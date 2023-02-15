@@ -1,6 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { HashedModuleIdsPlugin } = require('webpack');
+const { NamedChunksPlugin } = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
@@ -52,7 +52,11 @@ module.exports = env => {
         children: false,
         filename: '../index.html'
       }),
-      new HashedModuleIdsPlugin(),
+      new NamedChunksPlugin({
+      hashFunction: 'sha256',
+      hashDigest: 'hex',
+      hashDigestLength: 20
+    }),
       new CleanWebpackPlugin()
     ],
     optimization: {
