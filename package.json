@@ -6,8 +6,8 @@
   "scripts": {
     "test": "jest",
     "build": "gulp build",
-    "dev:webpack": "webpack --mode development --env.NODE_ENV=dev",
-    "build:webpack": "webpack --mode production --env.NODE_ENV=production",
+    "dev:webpack": "cross-env NODE_ENV=dev webpack --mode development",
+    "build:webpack": "webpack --mode production",
     "watch": "gulp",
     "proxy": "gulp watch-proxy",
     "static:dev": "gulp static-dev",
