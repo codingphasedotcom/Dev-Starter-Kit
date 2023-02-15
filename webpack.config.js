@@ -52,7 +52,11 @@ module.exports = env => {
         children: false,
         filename: '../index.html'
       }),
-      new HashedModuleIdsPlugin(),
+      new HashedModuleIdsPlugin({
+      hashFunction: 'sha256',
+      hashDigest: 'hex',
+      hashDigestLength: 20
+    }),
       new CleanWebpackPlugin()
     ],
     optimization: {
