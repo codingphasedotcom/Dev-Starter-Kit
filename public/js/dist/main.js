@@ -1,63 +1,26 @@
-(function(modules) {
-    var installedModules = {};
-    function __webpack_require__(moduleId) {
-        if (installedModules[moduleId]) return installedModules[moduleId].exports;
-        var module = installedModules[moduleId] = {
-            i: moduleId,
-            l: false,
-            exports: {}
-        };
-        modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-        module.l = true;
-        return module.exports;
-    }
-    __webpack_require__.m = modules;
-    __webpack_require__.c = installedModules;
-    __webpack_require__.d = function(exports, name, getter) {
-        if (!__webpack_require__.o(exports, name)) Object.defineProperty(exports, name, {
-            enumerable: true,
-            get: getter
-        });
-    };
-    __webpack_require__.r = function(exports) {
-        if ("undefined" !== typeof Symbol && Symbol.toStringTag) Object.defineProperty(exports, Symbol.toStringTag, {
-            value: "Module"
-        });
-        Object.defineProperty(exports, "__esModule", {
-            value: true
-        });
-    };
-    __webpack_require__.t = function(value, mode) {
-        if (1 & mode) value = __webpack_require__(value);
-        if (8 & mode) return value;
-        if (4 & mode && "object" === typeof value && value && value.__esModule) return value;
-        var ns = Object.create(null);
-        __webpack_require__.r(ns);
-        Object.defineProperty(ns, "default", {
-            enumerable: true,
-            value: value
-        });
-        if (2 & mode && "string" != typeof value) for (var key in value) __webpack_require__.d(ns, key, function(key) {
-            return value[key];
-        }.bind(null, key));
-        return ns;
-    };
-    __webpack_require__.n = function(module) {
-        var getter = module && module.__esModule ? function() {
-            return module["default"];
-        } : function() {
-            return module;
-        };
-        __webpack_require__.d(getter, "a", getter);
-        return getter;
-    };
-    __webpack_require__.o = function(object, property) {
-        return Object.prototype.hasOwnProperty.call(object, property);
-    };
-    __webpack_require__.p = "";
-    return __webpack_require__(__webpack_require__.s = "./assets/js/main.js");
-})({
-    "./assets/js/main.js": function(module, exports) {
-        eval("if (navigator.serviceWorker) {\n  navigator.serviceWorker.register('/sw.js').then(function (registration) {// console.log(\n    // \t'ServiceWorker registration successful with scope:',\n    // \tregistration.scope\n    // );\n  }).catch(function (error) {\n    console.log('ServiceWorker registration failed:', error);\n  });\n}\n\n//# sourceURL=webpack:///./assets/js/main.js?");
-    }
-});
+/*
+ * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+(self["webpackChunkcodingphase_dev_kit"] = self["webpackChunkcodingphase_dev_kit"] || []).push([["main"],{
+
+/***/ "WqC/":
+/*!***************************!*\
+  !*** ./assets/js/main.js ***!
+  \***************************/
+/***/ (() => {
+
+eval("throw new Error(\"Module build failed (from ./node_modules/prettier-loader/prettier-loader.js):\\nError: Couldn't resolve parser \\\"babylon\\\"\\n    at requireParser (/home/bashenga/Documents/Projects/Codingphase/npm-dev-kits/Dev-Starter-Kit-npm/node_modules/prettier/index.js:6616:15)\\n    at resolveParser (/home/bashenga/Documents/Projects/Codingphase/npm-dev-kits/Dev-Starter-Kit-npm/node_modules/prettier/index.js:7497:16)\\n    at normalize (/home/bashenga/Documents/Projects/Codingphase/npm-dev-kits/Dev-Starter-Kit-npm/node_modules/prettier/index.js:7741:22)\\n    at formatWithCursor2 (/home/bashenga/Documents/Projects/Codingphase/npm-dev-kits/Dev-Starter-Kit-npm/node_modules/prettier/index.js:9006:50)\\n    at /home/bashenga/Documents/Projects/Codingphase/npm-dev-kits/Dev-Starter-Kit-npm/node_modules/prettier/index.js:38176:12\\n    at Object.format (/home/bashenga/Documents/Projects/Codingphase/npm-dev-kits/Dev-Starter-Kit-npm/node_modules/prettier/index.js:38190:12)\\n    at module.exports (/home/bashenga/Documents/Projects/Codingphase/npm-dev-kits/Dev-Starter-Kit-npm/node_modules/prettier-loader/prettier-loader.js:98:31)\");\n\n//# sourceURL=webpack://codingphase-dev-kit/./assets/js/main.js?");
+
+/***/ })
+
+},
+/******/ __webpack_require__ => { // webpackRuntimeModules
+/******/ var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
+/******/ var __webpack_exports__ = (__webpack_exec__("WqC/"));
+/******/ }
+]);
