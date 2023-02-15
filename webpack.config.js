@@ -54,7 +54,7 @@ module.exports = env => {
       new CleanWebpackPlugin()
     ],
     optimization: {
-      moduleIds: 'hashed',
+      moduleIds: 'deterministic',
       runtimeChunk: 'single',
       splitChunks: {
         chunks: 'all',
