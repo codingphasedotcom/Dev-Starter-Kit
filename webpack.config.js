@@ -1,6 +1,5 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { HashedModuleIdsPlugin } = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
@@ -52,44 +51,40 @@ module.exports = env => {
         children: false,
         filename: '../index.html'
       }),
-      new HashedModuleIdsPlugin({
-      hashFunction: 'sha256',
-      hashDigest: 'hex',
-      hashDigestLength: 20
-    }),
       new CleanWebpackPlugin()
     ],
     optimization: {
-  moduleIds: 'hashed',
-  runtimeChunk: 'single',
-  splitChunks: {
-    chunks: 'all',
-    maxInitialRequests: Infinity,
-    minSize: 0,
-    cacheGroups: {
-      vendor: {
-        test: /[\\/]node_modules[\\/]/,
-        name(module) {
-          // get the name. E.g. node_modules/packageName/not/this/part.js
-          // or node_modules/packageName
-          const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
-          // npm package names are URL-safe, but some servers don't like @ symbols
-          return `npm.${packageName.replace('@', '')}`;
+      moduleIds: 'deterministic',
+      runtimeChunk: 'single',
+      splitChunks: {
+        chunks: 'all',
+        maxInitialRequests: Infinity,
+        minSize: 0,
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name(module) {
+              // get the name. E.g. node_modules/packageName/not/this/part.js
+              // or node_modules/packageName
+              const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
+              // npm package names are URL-safe, but some servers don't like @ symbols
+              return `npm.${packageName.replace('@', '')}`;
+            },
+          },
         },
       },
-    },
-  },
-  minimizer: [
-    new TerserPlugin({
-      terserOptions: {
-        compress: false,
-        mangle: false,
-        output: {
-          beautify: env.NODE_ENV !== 'production' ? true : false
-        }
-      }
-    })
-  ]
-}
+      minimizer: [
+        new TerserPlugin({
+          terserOptions: {
+            compress: false,
+            mangle: false,
+            output: {
+              beautify: env.NODE_ENV !== 'production' ? true : false
+            }
+          }
+        })
+      ],
+      providedExports: true
+    }
   };
 };
