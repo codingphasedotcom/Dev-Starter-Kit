@@ -5,7 +5,7 @@
   "singleQuote": true,
   "trailingComma": "none",
   "jsxBracketSameLine": false,
-  "parser": "babylon",
+  "parser": "@babel/parser",
   "noSemi": true,
   "rcVerbose": true
 }
