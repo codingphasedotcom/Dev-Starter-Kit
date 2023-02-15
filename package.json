@@ -57,6 +57,7 @@
     "@babel/plugin-proposal-decorators": "^7.20.13",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/plugin-transform-async-to-generator": "^7.20.7",
+    "@paralleldrive/cuid2": "^2.0.1",
     "gulp-pug": "^5.0.0",
     "svelte": "^3.55.1",
     "svelte-loader": "^3.1.5",
