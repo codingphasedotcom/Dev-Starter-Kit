@@ -8,19 +8,19 @@
  */
 (self["webpackChunkcodingphase_dev_kit"] = self["webpackChunkcodingphase_dev_kit"] || []).push([["main"],{
 
-/***/ 866:
+/***/ 420:
 /*!***************************!*\
   !*** ./assets/js/main.js ***!
   \***************************/
 /***/ (() => {
 
-eval("throw new Error(\"Module build failed (from ./node_modules/prettier-loader/prettier-loader.js):\\nError: Couldn't resolve parser \\\"@babel/parser\\\"\\n    at requireParser (/home/bashenga/Documents/Projects/Codingphase/npm-dev-kits/Dev-Starter-Kit-npm/node_modules/prettier/index.js:6616:15)\\n    at resolveParser (/home/bashenga/Documents/Projects/Codingphase/npm-dev-kits/Dev-Starter-Kit-npm/node_modules/prettier/index.js:7497:16)\\n    at normalize (/home/bashenga/Documents/Projects/Codingphase/npm-dev-kits/Dev-Starter-Kit-npm/node_modules/prettier/index.js:7741:22)\\n    at formatWithCursor2 (/home/bashenga/Documents/Projects/Codingphase/npm-dev-kits/Dev-Starter-Kit-npm/node_modules/prettier/index.js:9006:50)\\n    at /home/bashenga/Documents/Projects/Codingphase/npm-dev-kits/Dev-Starter-Kit-npm/node_modules/prettier/index.js:38176:12\\n    at Object.format (/home/bashenga/Documents/Projects/Codingphase/npm-dev-kits/Dev-Starter-Kit-npm/node_modules/prettier/index.js:38190:12)\\n    at module.exports (/home/bashenga/Documents/Projects/Codingphase/npm-dev-kits/Dev-Starter-Kit-npm/node_modules/prettier-loader/prettier-loader.js:98:31)\");\n\n//# sourceURL=webpack://codingphase-dev-kit/./assets/js/main.js?");
+eval("if (navigator.serviceWorker) {\n  navigator.serviceWorker.register('/sw.js').then(function (registration) {\n    // console.log(\n    // \t'ServiceWorker registration successful with scope:',\n    // \tregistration.scope\n    // );\n  }).catch(function (error) {\n    console.log('ServiceWorker registration failed:', error);\n  });\n}\n\n//# sourceURL=webpack://codingphase-dev-kit/./assets/js/main.js?");
 
 /***/ })
 
 },
 /******/ __webpack_require__ => { // webpackRuntimeModules
 /******/ var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-/******/ var __webpack_exports__ = (__webpack_exec__(866));
+/******/ var __webpack_exports__ = (__webpack_exec__(420));
 /******/ }
 ]);
