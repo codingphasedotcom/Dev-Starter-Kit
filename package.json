@@ -46,7 +46,6 @@
     "node-sass": "^8.0.0",
     "postcss-loader": "^7.0.2",
     "prettier": "^2.8.4",
-    "prettier-loader": "^3.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.5",
