@@ -1,5 +1,4 @@
 import gulp from 'gulp';
-const { parallel, series } = gulp;
 import sass from 'gulp-sass';
 import autoprefixer from 'gulp-autoprefixer';
 import browserSync from 'browser-sync';
@@ -10,15 +9,19 @@ import prettyUrl from 'gulp-pretty-url';
 import del from 'del';
 import gulpEdge from 'gulp-edgejs';
 
+const { parallel, series } = gulp;
 const reload = browserSync.reload;
 
 // Compiles SCSS To CSS
 function compileStyles() {
+    // Use require('sass') instead of default gulp-sass compiler
+    const sassCompiler = sass(require('sass'));
+
     return gulp
         .src('assets/scss/**/*.scss')
-        .pipe(sass({
+        .pipe(sassCompiler({
             outputStyle: 'compressed'
-        }).on('error', sass.logError))
+        }).on('error', sassCompiler.logError))
         .pipe(
             autoprefixer({
                 overrideBrowserslist: ['last 2 versions']
