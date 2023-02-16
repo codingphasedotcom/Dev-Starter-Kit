@@ -26,7 +26,7 @@ module.exports = env => {
         {
           test: /\.js$/,
           exclude: /node_modules/,
-          use: ['babel-loader', 'prettier-loader']
+          use: ['babel-loader']
         },
         { test: /\.svelte$/, exclude: /node_modules/, use: 'svelte-loader' },
         {
