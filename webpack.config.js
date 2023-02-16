@@ -68,7 +68,7 @@ module.exports = env => {
       new HtmlWebpackPlugin({
         inject: false,
         hash: true,
-        template: './assets/index.html',
+        template: './assets/template.html',
         children: false,
         filename: '../index.html'
       }),
