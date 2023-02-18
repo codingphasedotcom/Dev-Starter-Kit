@@ -1,5 +1,7 @@
+import path from 'path';
 import gulp from 'gulp';
 import sass from 'gulp-sass';
+import sassCompiler from 'sass';
 import autoprefixer from 'gulp-autoprefixer';
 import browserSync from 'browser-sync';
 import { exec } from 'child_process';
@@ -7,193 +9,198 @@ import pug from 'gulp-pug';
 import imagemin from 'gulp-imagemin';
 import prettyUrl from 'gulp-pretty-url';
 import del from 'del';
-import gulpEdge from 'gulp-edgejs';
+import webpack from 'webpack';
 
-const { parallel, series } = gulp;
+// Destructure parallel and series functions from gulp
+const { parallel, series, watch, src, dest } = gulp;
+
+// Reloading site when changes occur
 const reload = browserSync.reload;
 
-// Compiles SCSS To CSS
+// Set the "sass" option to use "sass" package
+const { options } = sass(sassCompiler);
+
+// Compile SCSS files to CSS
 function compileStyles() {
-    // Use require('sass') instead of default gulp-sass compiler
-    const sassCompiler = sass(require('sass'));
-
-    return gulp
-        .src('assets/scss/**/*.scss')
-        .pipe(sassCompiler({
-            outputStyle: 'compressed'
-        }).on('error', sassCompiler.logError))
-        .pipe(
-            autoprefixer({
-                overrideBrowserslist: ['last 2 versions']
-            })
-        )
-        .pipe(gulp.dest('./public/css'))
-        .on('error', (err) => {
-            console.log(`Error in styles task: ${err.message}`);
-        })
-        .pipe(browserSync.stream())
-        .on('error', (err) => {
-            console.log(`Error in styles task: ${err.message}`);
-        });
+  return src('./assets/scss/**/*.scss')
+    .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
+    .pipe(autoprefixer())
+    .pipe(dest('./public/css'))
+    .pipe(reload({ stream: true }));
 }
-gulp.task('styles', compileStyles);
 
-// Use Webpack to compile latest Javascript to ES5
+export default compileStyles;
+
+// Use Webpack to compile latest JavaScript to ES5
 // Webpack on Development Mode
-function runWebpackDev(cb) {
-    exec('NODE_ENV=dev webpack --mode development', function (err, stdout, stderr) {
-        console.log(stdout);
-        console.log(stderr);
-        if (err) {
-            console.log(`Error in webpack:dev task: ${err.message}`);
-        }
-        cb(err);
-    });
+export function runWebpackDev(cb) {
+  webpack({
+    mode: 'development',
+    entry: './assets/js/main.js',
+    output: {
+      path: path.join(new URL('./public/js/', import.meta.url).pathname),
+      filename: 'main.min.js',
+    },
+    // ...
+  }, function (err, stats) {
+    if (err) {
+      console.log(`Error in webpack:dev task: ${err.message}`);
+    } else {
+      console.log(stats.toString({
+        chunks: false,
+        colors: true,
+      }));
+    }
+    cb(err);
+  });
 }
-gulp.task('webpack:dev', series(runWebpackDev));
+//export { runWebpackDev }
 
 // Webpack on Production Mode
-function runWebpackProd(cb) {
-    exec('npm run build:webpack', function (err, stdout, stderr) {
-        console.log(stdout);
-        console.log(stderr);
-        cb(err);
-    });
-}
-gulp.task('webpack:prod', series(runWebpackProd));
+export function runWebpackProd(cb) {
+  const outputPath = fileURLToPath(new URL('./public/js', import.meta.url));
 
-// Browser-sync to get live reload and sync with mobile devices
-function initBrowserSync() {
-    try {
-        browserSync.init({
-            server: './public',
-            notify: false,
-            open: false,
-            injectChanges: false
-        });
-    } catch (err) {
-        console.error('Error initializing browser-sync: ', err);
+  webpack({
+    mode: 'production',
+    entry: './assets/js/main.js',
+    output: {
+      path: outputPath,
+      filename: 'main.min.js',
+    },
+    module: {
+      rules: [
+        {
+          test: /\.js$/,
+          exclude: /node_modules/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env'],
+            },
+          },
+        },
+      ],
+    },
+  }, function (err, stats) {
+    if (err) {
+      console.log(`Error in webpack:prod task: ${err.message}`);
+    } else {
+      console.log(stats.toString({
+        chunks: false,
+        colors: true,
+      }));
     }
+    cb(err);
+  });
 }
-gulp.task('browser-sync', series(initBrowserSync));
+//export { runWebpackProd }
 
 // Use Browser Sync With Any Type Of Backend
-function proxyBrowserSync() {
-    // THIS IS FOR SITUATIONS WHEN YOU HAVE ANOTHER SERVER RUNNING
-    try {
-        browserSync.init({
-            proxy: {
-                target: 'http://localhost:3333/',
-                ws: true
-            }
-        });
-    } catch (err) {
-        console.error('Error initializing browser-sync with proxy: ', err);
-    }
+export function initBrowserSync() {
+  try {
+    browserSync.init({
+      server: {
+        baseDir: './public',
+      },
+      notify: true,
+      open: false,
+      reloadDelay: 300,
+    });
+  } catch (err) {
+    console.error('Error initializing browser-sync with server: ', err);
+  }
 }
-gulp.task('browser-sync-proxy', series(proxyBrowserSync));
 
-// Minimize Your Images
-function minimizeImages() {
-    try {
-        return gulp
-            .src('assets/img/**/*')
-            .pipe(imagemin([
-                imagemin.gifsicle({ interlaced: true }),
-                imagemin.jpegtran({ progressive: true }),
-                imagemin.optipng({ optimizationLevel: 5 }),
-                imagemin.svgo({
-                    plugins: [{ removeViewBox: true }, { cleanupIDs: false }]
-                })
-            ]))
-            .pipe(gulp.dest('./public/img'));
-    } catch (err) {
-        console.error('Error minimizing images: ', err);
-    }
+// Minimize your images
+export function minimizeImages() {
+  try {
+    return gulp
+      .src('assets/img/**/*')
+      .pipe(
+        imagemin([
+          imagemin.gifsicle({ interlaced: true }),
+          imagemin.jpegtran({ progressive: true }),
+          imagemin.optipng({ optimizationLevel: 5 }),
+          imagemin.svgo({ plugins: [{ removeViewBox: true }, { cleanupIDs: false }] }),
+        ])
+      )
+      .pipe(gulp.dest('./public/img'));
+  } catch (err) {
+    console.error('Error minimizing images: ', err);
+  }
 }
-gulp.task('imagemin', series(minimizeImages));
 
 // Default Gulp task
-function defaultTask(cb) {
-    const watch = () => {
-        gulp.watch('./assets/scss/**/*', gulp.parallel('styles'));
-        gulp.watch('./assets/js/**/*', gulp.series('webpack:dev'));
-        gulp.watch(['./public/**/*', './public/*']).on('change', browserSync.reload);
-    };
+export function defaultTask(cb) {
+  // Watch for changes and recompile assets on the fly
+  const watchTask = () => {
+    watch('./assets/scss/**/*', compileStyles);
+    watch('./assets/js/**/*', series(runWebpackDev));
+    watch(['./public/**/*', './public/*'], browserSync.reload);
+  };
 
-    const dev = gulp.series('webpack:dev', 'styles', watch);
-    const browserSyncInit = gulp.series(initBrowserSync);
+  // Define development tasks
+  const dev = series(runWebpackDev, compileStyles, watchTask);
+  const browserSyncInit = series(initBrowserSync);
 
-    gulp.task('dev', dev);
-    gulp.task('browserSyncInit', browserSyncInit);
-
-    return gulp.parallel('dev', 'browserSyncInit')(cb);
+  // Run the tasks in parallel
+  return parallel(dev, browserSyncInit)(cb);
 }
 
-gulp.task('default', defaultTask);
+// Watch for changes and recompile assets on the fly when running on a backend like PHP, PYTHON, GO, etc..
+export function watchProxy() {
+  // Define a function to watch for changes and recompile assets
+  const watchTask = () => {
+    watch('./assets/scss/**/*', compileStyles);
+    watch('./assets/js/**/*', parallel(runWebpackDev));
+    watch(['./public/**/*', './public/*'], browserSync.reload);
+  };
 
-// Gulp task when running on a backend like PHP, PYTHON, GO, etc..
-function watchProxy() {
-  return parallel(
-    series(
-      'webpack:dev',
-      'styles',
-      function watch() {
-        gulp.watch('./assets/scss/**/*', parallel('styles'));
-        gulp.watch('./assets/js/**/*', parallel('webpack:dev'));
-        gulp.watch(['./public/**/*', './public/*']).on('change', browserSync.reload);
-      }
-    ),
-    series('browser-sync-proxy')
-  ).on('error', function (err) {
-    console.error(err.message);
-    this.emit('end');
-  });
+  // Define the development tasks to be run in parallel
+  const dev = series('webpack:dev', compileStyles, watchTask);
+  const browserSyncProxy = series('browser-sync-proxy');
+
+  // Run the tasks in parallel
+  return parallel(dev, browserSyncProxy);
 }
-gulp.task('watch-proxy', watchProxy);
 
-// Production build for your app
+// Build production-ready assets for your app
 function build() {
-  return series(
-    parallel('styles', 'webpack:prod')
-  ).on('error', function (err) {
+  return series(compileStyles, runWebpackProd);
+}
+
+// Convert Pug templates to HTML files
+function buildGulpHtml() {
+  try {
+    return gulp
+      .src([
+        'assets/views/**/*.pug',
+        '!assets/views/{layouts,layouts/**}',
+        '!assets/views/{includes,includes/**}',
+      ])
+      .pipe(pug({ pretty: true }))
+      .pipe(gulp.dest('./temp'));
+  } catch (err) {
     console.error(err.message);
-    this.emit('end');
-  });
-}
-gulp.task('build', build);
-
-// Static Site Generator
-function views() {
-  function buildGulpHtml() {
-    try {
-      return gulp
-        .src([
-          'assets/views/**/*.pug',
-          '!assets/views/{layouts,layouts/**}',
-          '!assets/views/{includes,includes/**}',
-        ])
-        .pipe(pug({ pretty: true }))
-        .pipe(gulp.dest('./temp'));
-    } catch (err) {
-      console.error(err.message);
-    }
   }
-  function cleanUrl() {
-    try {
-      return gulp
-        .src('temp/**/*.html')
-        .pipe(prettyUrl())
-        .pipe(gulp.dest('public'));
-    } catch (err) {
-      console.error(err.message);
-    }
-  }
-  return series(buildGulpHtml, cleanUrl);
 }
-gulp.task('views', views);
 
-// Delete Your Temp Files
+// Clean up URLs in HTML files
+function cleanUrl() {
+  try {
+    return gulp
+      .src('temp/**/*.html')
+      .pipe(prettyUrl())
+      .pipe(gulp.dest('public'));
+  } catch (err) {
+    console.error(err.message);
+  }
+}
+
+// Export the "views" task to compile Pug templates to HTML and clean up URLs
+export const views = series(buildGulpHtml, cleanUrl);
+
+// Delete temporary files
 function cleanTemp() {
   try {
     return del(['./temp']);
@@ -201,56 +208,54 @@ function cleanTemp() {
     console.error(err.message);
   }
 }
-gulp.task('cleanTemp', cleanTemp);
 
-// Tasks to generate site on development this will also have live reload
-function staticDev() {
-  return parallel(
-    series(
-      'views',
-      'webpack:dev',
-      'styles',
-      'cleanTemp',
-      function watch() {
-        // Watch for changes in views
-        gulp.watch('./assets/views/**/*', series('views', 'cleanTemp'))
-          .on('error', function handleError(error) {
-            console.log(error);
-            this.emit('end');
-          });
+// Export the "cleanTempTask" task to delete temporary files
+export const cleanTempTask = cleanTemp;
 
-        // Watch for changes in styles
-        gulp.watch('./assets/scss/**/*', parallel('styles'))
-          .on('error', function handleError(error) {
-            console.log(error);
-            this.emit('end');
-          });
+// Tasks to generate site on development with live reload
+function staticDev(cb) {
+  function watch() {
+    // Watch for changes in views
+    gulp.watch('./assets/views/**/*', series('views', 'cleanTemp'))
+      .on('error', function handleError(error) {
+        console.log(error);
+        this.emit('end');
+      });
 
-        // Watch for changes in JS files
-        gulp.watch('./assets/js/**/*', parallel('webpack:dev'))
-          .on('error', function handleError(error) {
-            console.log(error);
-            this.emit('end');
-          });
+    // Watch for changes in styles
+    gulp.watch('./assets/scss/**/*', parallel(compileStyles))
+      .on('error', function handleError(error) {
+        console.log(error);
+        this.emit('end');
+      });
 
-        // Reload the browser when changes are made to the public folder
-        gulp.watch(['./public/**/*', './public/*']).on('change', browserSync.reload)
-          .on('error', function handleError(error) {
-            console.log(error);
-            this.emit('end');
-          });
-      }
-    ),
-    series('browser-sync')
-  )
-}
-gulp.task('static-dev', staticDev);
+    // Watch for changes in JS files
+    gulp.watch('./assets/js/**/*', parallel('webpack:dev'))
+      .on('error', function handleError(error) {
+        console.log(error);
+        this.emit('end');
+      });
 
-// this will run your static site for production
-function staticBuild() {
-    return series(
-        series('views', 'cleanTemp'),
-        parallel('styles', 'webpack:prod')
-    ).on('error', console.error.bind(console)); // add error handling for all tasks
-}
-gulp.task('static-build', staticBuild);
+    // Reload the browser when changes are made to the public folder
+    gulp.watch(['./public/**/*', './public/*']).on('change', browserSync.reload)
+      .on('error', function handleError(error) {
+        console.log(error);
+        this.emit('end');
+      });
+  };
+
+  const dev = series('views', 'webpack:dev', compileStyles, 'cleanTemp');
+  const browserSyncInit = series(initBrowserSync, watch);
+
+  // Export the tasks
+  const staticDevTask = parallel(dev, browserSyncInit);
+  staticDevTask.displayName = 'staticDev';
+
+  return staticDevTask(cb);
+};
+
+// This will run your static site for production
+const staticBuild = series(views, cleanTemp, parallel(compileStyles, runWebpackProd));
+staticBuild.displayName = 'staticBuild';
+
+export { staticDev, staticBuild };
