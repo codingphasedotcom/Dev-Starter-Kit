@@ -1,7 +1,6 @@
 import path from 'path';
 import gulp from 'gulp';
-import sass from 'gulp-sass';
-import sassCompiler from 'sass';
+import gulpSass from 'gulp-sass';
 import autoprefixer from 'gulp-autoprefixer';
 import browserSync from 'browser-sync';
 import { exec } from 'child_process';
@@ -10,6 +9,7 @@ import imagemin from 'gulp-imagemin';
 import prettyUrl from 'gulp-pretty-url';
 import del from 'del';
 import webpack from 'webpack';
+import { createRequire } from 'module';
 
 // Destructure parallel and series functions from gulp
 const { parallel, series, watch, src, dest } = gulp;
@@ -17,13 +17,16 @@ const { parallel, series, watch, src, dest } = gulp;
 // Reloading site when changes occur
 const reload = browserSync.reload;
 
+// This will make require available in your ES module scope
+const require = createRequire(import.meta.url);
+
 // Set the "sass" option to use "sass" package
-const { options } = sass(sassCompiler);
+const sass = gulpSass(require('sass'));
 
 // Compile SCSS files to CSS
 function compileStyles() {
   return src('./assets/scss/**/*.scss')
-    .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
+    .pipe(sass({ outputStyle: 'compressed', sass }).on('error', sass.logError))
     .pipe(autoprefixer())
     .pipe(dest('./public/css'))
     .pipe(reload({ stream: true }));
