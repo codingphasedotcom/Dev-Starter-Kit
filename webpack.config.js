@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = env => {
   return {
@@ -25,7 +26,7 @@ module.exports = env => {
         {
           test: /\.js$/,
           exclude: /node_modules/,
-          use: ['babel-loader', 'prettier-loader']
+          use: ['babel-loader']
         },
         { test: /\.svelte$/, exclude: /node_modules/, use: 'svelte-loader' },
         {
@@ -41,13 +42,33 @@ module.exports = env => {
       ]
     },
     plugins: [
+    new ESLintPlugin({
+      extensions: ['js'],
+      formatter: 'table',
+      eslintPath: require.resolve('eslint'),
+      emitWarning: true,
+      emitError: true,
+      failOnError: true,
+      failOnWarning: false,
+      context: './src',
+      cache: true,
+      cacheLocation: './node_modules/.cache/.eslintcache',
+      threads: false,
+      overrideConfig: {
+        extends: ['eslint:recommended', 'plugin:prettier/recommended'],
+        plugins: ['prettier'],
+        rules: {
+          'prettier/prettier': 'error',
+        },
+      },
+    }),
       new MiniCssExtractPlugin({
         filename: 'styles.css'
       }),
       new HtmlWebpackPlugin({
         inject: false,
         hash: true,
-        template: './assets/index.html',
+        template: './assets/template.html',
         children: false,
         filename: '../index.html'
       }),
