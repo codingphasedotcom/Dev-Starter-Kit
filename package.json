@@ -62,6 +62,7 @@
     "@babel/plugin-transform-async-to-generator": "^7.20.7",
     "@paralleldrive/cuid2": "^2.0.1",
     "gulp-pug": "^5.0.0",
+    "sass": "^1.58.3",
     "svelte": "^3.55.1",
     "svelte-loader": "^3.1.5",
     "url-parse": "^1.5.10",
